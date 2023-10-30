@@ -5,7 +5,6 @@ from django.utils.translation import gettext_lazy as _
 
 class TimestampModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-
     class Meta:
         abstract = True
 
@@ -18,7 +17,7 @@ class OwnedModel(models.Model):
         abstract = True
 
 
-class Account(models.Model):
+class Account(TimestampModel):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -39,7 +38,7 @@ class Document(TimestampModel, OwnedModel):
 
 
 
-class Category(OwnedModel):
+class Category(TimestampModel, OwnedModel):
     category_name = models.CharField(max_length=100)
     parent = models.ForeignKey(
         "self", 
