@@ -3,6 +3,21 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 
+class TimestampModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+
+class OwnedModel(models.Model):
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    class Meta:
+        abstract = True
+
+
 class Account(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -12,23 +27,19 @@ class Account(models.Model):
     bank_account = models.CharField(max_length=20, null=True, blank=True)
 
 
-class Document(models.Model):
+class Document(TimestampModel, OwnedModel):
     class Type(models.TextChoices):
         BILL = ("BILL", _("Lasku"))
         RECEIPT = ("RECEIPT", _("Kuitti"))
         CALCULATION = ("CALCULATION", _("Laskelma"))
         OTHER = ("OTHER", _("Muu"))
 
-    created_at = models.DateTimeField(auto_now_add=True)
     document_type = models.CharField(max_length=20, choices=Type.choices)
     document_file = models.FileField(upload_to="docs/%Y-%m/")
-    owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-    )
 
 
-class Category(models.Model):
+
+class Category(OwnedModel):
     category_name = models.CharField(max_length=100)
     parent = models.ForeignKey(
         "self", 
@@ -36,13 +47,9 @@ class Category(models.Model):
         related_name="children",
         on_delete=models.CASCADE,
     )
-    owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-    )
 
 
-class Transaction(models.Model):
+class Transaction(TimestampModel):
     class Type(models.TextChoices):
         INCOME = ("IN", _("Tulo"))
         EXPENSE = ("EXP", _("Meno"))
@@ -52,7 +59,6 @@ class Transaction(models.Model):
         COMPLETE = ("COMPLETE", _("Tapahtunut"))
     
     account = models.ForeignKey(Account, on_delete=models.RESTRICT)
-    created_at = models.DateTimeField(auto_now_add=True)
     transaction_type = models.CharField(max_length=10, choices=Type.choices)
     transaction_state = models.CharField(max_length=10, choices=State.choices)
     transaction_date = models.DateField()
