@@ -104,4 +104,7 @@ class Transaction(TimestampModel):
         verbose_name_plural = _("tilitapahtumat")
     
     def __str__(self):
-        return f"{self.transaction_date} {self.account} {self.amount} ({self.transaction_state})"
+        return (
+            f"{self.transaction_date} {self.amount:8.2f}"
+            f"{self.transaction_comment} ({self.State(self.transaction_state).label})"
+            )
