@@ -19,4 +19,13 @@ class DocumentAdmin(ModelAdmin):
 
 @admin.register(Transaction)
 class TransactionAdmin(ModelAdmin):
-    pass
+    list_display = [
+        "account",
+        "transaction_type",
+        "transaction_state",
+        "transaction_date",
+        "amount",
+        "transaction_comment",
+        "transaction_category"
+    ]
+    list_display_links = list_display
