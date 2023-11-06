@@ -1,0 +1,12 @@
+{% extends "moneyflow/base.html" %}
+<!DOCTYPE html>
+{% block content %}
+  <body>
+    <ul>
+        {% for doc in documents %}
+            <li>{{doc}}</li>
+        {% endfor %}
+    </ul>
+
+  </body>
+{% endblock %}
