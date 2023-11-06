@@ -84,6 +84,7 @@ class Transaction(TimestampModel):
     transaction_state = models.CharField(max_length=10, choices=State.choices, verbose_name=_("tila"))
     transaction_date = models.DateField(verbose_name=_("paivays"))
     amount = models.DecimalField(max_digits=20, decimal_places=2, verbose_name=_("maara"))
+    transaction_comment = models.CharField(max_length=200, verbose_name=_("kommentti"), blank=True)
     transaction_category = models.ForeignKey(
         Category, 
         null=True, 
